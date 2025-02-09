@@ -10,7 +10,6 @@ dotenv.config();
 
 const app = express();
 const server = createServer(app);
-// const io = new Server(server, { cors: { origin: "*" } });
 
 app.use(express.json());
 app.use(cors());
@@ -19,6 +18,7 @@ connectDB();
 
 // Init all routes
 InitRoutes(app);
+
 //Server
 const PORT = 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

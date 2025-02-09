@@ -7,7 +7,7 @@ router.post('/register', authController.register);
 // @route POST /api/auth/login
 router.post('/login', authController.login);
 
-// @route POST /api/auth/me
+// @route GET /api/auth/me
 router.get('/me', authController.me);
 
 module.exports = router;
