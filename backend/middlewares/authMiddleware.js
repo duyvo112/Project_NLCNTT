@@ -7,7 +7,7 @@ const authMiddleware = {
         const token = req.headers.token;
         if (token) {
           const accessToken = token.split(" ")[1];
-          jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+          jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
             if (err) {
               return res.status(401).json("Token is not valid");
             }
