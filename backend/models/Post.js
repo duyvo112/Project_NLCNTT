@@ -6,13 +6,7 @@ const postSchema = new mongoose.Schema({
   publicId: { type: String, required: true }, // ID của ảnh trên Cloudinary
   caption: { type: String, default:""}, // Dòng tin nhắn kèm ảnh
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Danh sách người đã thả tim
-  comments: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Người bình luận
-      text: { type: String, required: true }, // Nội dung bình luận
-      createdAt: { type: Date, default: Date.now },
-    },
-  ],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }], // Tham chiếu đến mô hình Comment
   createdAt: { type: Date, default: Date.now },
 });
 

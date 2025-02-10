@@ -2,6 +2,7 @@ const postController = require('../controllers/postController');
 const upload = require('../config/Multer');
 const router = require('express').Router();
 const authMiddleware = require('../middlewares/authMiddleware');
+const commentController = require('../controllers/commentController');
 
 // @route POST /api/post
 router.post('/',authMiddleware.verifyToken,upload.single("image"), postController.createPost);
@@ -23,6 +24,9 @@ router.put('/like/:id',authMiddleware.verifyToken, postController.likePost);
 
 // @route PUT /api/post/comment/:id
 
-router.put('/comment/:id',authMiddleware.verifyToken, postController.commentPost);
+router.put('/comment/:id',authMiddleware.verifyToken, commentController.commentPost);
 
+// @route GET /api/post/comment/:id
+
+router.get('/comment/:id',authMiddleware.verifyToken, commentController.getComments);
 module.exports = router;

@@ -24,7 +24,7 @@ const postController = {
     },
     getAllPosts: async (req, res) => {
         try {
-            const posts = await Post.find().sort({ createdAt: -1 }).populate("user");
+            const posts = await Post.find().sort({ createdAt: -1 }).populate("user").populate("comments");
             return res.json(posts);
         } catch (error) {
             res.status(500).json({ msg: error.message });
@@ -80,24 +80,7 @@ const postController = {
             res.status(500).json({ msg: error.message });
         }
     },
-    commentPost: async (req, res) => {
-        try {
-            const post = await Post.findById(req.params.id);
-            if (!post) return res.status(404).json({ msg: "Post not found" });
-
-            const newComment = {
-                user: req.user.id,
-                text: req.body.text,
-                
-            };
-
-            post.comments.unshift(newComment);
-            await post.save();
-            return res.json({ msg: "Comment added" });
-        } catch (error) {
-            res.status(500).json({ msg: error.message });
-        }
-    },
+    
 };
 
 module.exports = postController;
