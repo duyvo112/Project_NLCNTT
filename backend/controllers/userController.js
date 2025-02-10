@@ -24,7 +24,7 @@ const userController = {
         if (!req.file) return res.status(400).json({ error: "Không có ảnh nào được chọn" });
           // Upload ảnh lên Cloudinary
           const result = await cloudinary.uploader.upload(req.file.path, {
-              folder: "avatars",
+              folder: "mini-social-network/avatars",
               public_id: `${req.user.id}_avatar`,
               overwrite: true,
           });

@@ -34,7 +34,7 @@ const authController = {
                 isAdmin: user.isAdmin,
             },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "3m" }
+            { expiresIn: "15m" }
         );
     },
     // GENERATE REFRESH TOKEN

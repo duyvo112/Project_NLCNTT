@@ -1,9 +1,9 @@
-const uploadRoutes = require("./upload");
+const postRoutes = require("./post");
 const userRoutes = require("./user");
 const authRoutes = require("./auth");
 
 const InitRoutes = (app) => { 
-    app.use("/api/upload",uploadRoutes);
+    app.use("/api/post",postRoutes);
     app.use("/api/user", userRoutes);
     app.use("/api/auth", authRoutes);
 }

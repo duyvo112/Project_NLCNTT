@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Người đăng
   imageUrl: { type: String, required: true }, // Ảnh đăng lên Cloudinary
-  caption: { type: String, required: true }, // Dòng tin nhắn kèm ảnh
+  publicId: { type: String, required: true }, // ID của ảnh trên Cloudinary
+  caption: { type: String, default:""}, // Dòng tin nhắn kèm ảnh
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Danh sách người đã thả tim
   comments: [
     {
