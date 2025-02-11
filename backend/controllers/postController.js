@@ -1,7 +1,7 @@
 const cloudinary = require('../config/Cloudinary');
 const Post = require('../models/Post');
 const User = require('../models/User');
-
+const Comment = require('../models/Comment');
 const postController = {
     createPost: async (req, res) => {
         try {
@@ -15,9 +15,32 @@ const postController = {
                 caption: req.body.caption,
                 publicId: req.file.filename,
             });
-
             const newPost = await makePost.save();
             return res.json(newPost);
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+    updatePost: async (req, res) => {
+        try {
+            const post = await Post.findById(req.params.id);
+            if (!post) return res.status(404).json({ msg: "Post not found" });
+            if (req.file) {
+                await cloudinary.uploader.destroy(post.publicId);          
+            }
+
+            // Cập nhật bài viết
+            const updatedPost = await Post.findByIdAndUpdate(
+                req.params.id,
+                {
+                    imageUrl: req.file.path,
+                    publicId: req.file.filename,
+                    caption: req.body.caption,
+                },
+                { new: true }
+            );
+
+            return res.json(updatedPost);
         } catch (error) {
             res.status(500).json({ msg: error.message });
         }
@@ -44,14 +67,9 @@ const postController = {
             const post = await Post.findById(req.params.id);
             if (!post) return res.status(404).json({ msg: "Post not found" });
 
-            // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu của bài viết hay không
-            if (post.user.toString() !== req.user.id) {
-                return res.status(403).json({ msg: "You are not authorized to delete this post" });
-            }
-
             // Xóa bài viết
+            await Comment.deleteMany({ post: req.params.id });
             await cloudinary.uploader.destroy(post.publicId);
-            
             await Post.findByIdAndDelete(req.params.id);
             return res.json({ msg: "Post deleted successfully" });
         } catch (error) {
@@ -80,7 +98,16 @@ const postController = {
             res.status(500).json({ msg: error.message });
         }
     },
-    
+    getPostByUser: async (req, res) => {
+        try {
+            
+            const posts = await Post.find({ user: req.params.id }).sort({ createdAt: -1 });
+            if(posts.length === 0) return res.status(404).json({msg: "No posts found"});
+            return res.json(posts);
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
 };
 
 module.exports = postController;
