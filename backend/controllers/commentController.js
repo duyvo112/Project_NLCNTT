@@ -34,6 +34,27 @@ const commentController = {
             res.status(500).json({ msg: error.message });
         }
     },
+    deleteComment: async (req, res) => {
+        try {
+            const comment = await Comment.findById(req.params.id);
+            if (!comment) return res.status(404).json({ msg: "Comment not found" });
+
+            // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu của bình luận hay không
+            if (comment.user.toString() !== req.user.id) {
+                return res.status(403).json({ msg: "You are not authorized to delete this comment" });
+            }
+
+            await Comment.findByIdAndDelete(req.params.id);
+            await Post.findOneAndUpdate(
+                { comments: req.params.id },
+                { $pull: { comments: req.params.id } }
+            );
+            return res.json({ msg: "Comment deleted successfully" });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+    
     
 }
 module.exports = commentController;
