@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
-let refreshTokens = [];
 const authController = {
     // REGISTER
     register: async (req, res) => {
@@ -62,7 +61,6 @@ const authController = {
             if (user && validPassword) {
                 const accessToken = authController.generateAccessToken(user);
                 const refreshToken = authController.generateRefreshToken(user);
-                refreshTokens.push(refreshToken);
                 res.cookie("refreshToken", refreshToken, {
                   httpOnly: true,
                   secure: false,
@@ -94,7 +92,23 @@ const authController = {
         } catch (error) {
             res.status(500).json({ error: "Lỗi lấy thông tin" });
         }
-    }
+    },
+    refresh: async (req, res) => {
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) return res.status(401).json("You are not authenticated");
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+          err && console.log(err);
+          const newAccessToken = authController.generateAccessToken(user);
+          const newRefreshToken = authController.generateRefreshToken(user);
+          res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+          })
+         res.status(200).json({ accessToken: newAccessToken });
+        });
+    },
 };
 
 module.exports = authController;
