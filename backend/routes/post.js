@@ -9,6 +9,10 @@ const commentController = require('../controllers/commentController');
 // Create Post
 router.post('/',authMiddleware.verifyToken,upload.single("image"), postController.createPost);
 
+// Get Post by Friends
+
+router.get('/friends',authMiddleware.verifyToken, postController.getPostByFriends);
+
 // Get All Posts
 router.get('/',authMiddleware.verifyToken, postController.getAllPosts);
 
@@ -26,6 +30,7 @@ router.put('/like/:id',authMiddleware.verifyToken, postController.likePost);
 
 // Get Posts by User
 router.get('/user/:id',authMiddleware.verifyToken, postController.getPostByUser);
+
 
 /*---------------COMMENT ROUTES-------------------*/
 
