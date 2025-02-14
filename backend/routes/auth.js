@@ -15,4 +15,8 @@ router.post('/logout',authMiddleware.verifyToken, authController.logout);
 //Get User
 router.get('/me',authMiddleware.verifyToken, authController.me);
 
+//Refresh Token
+
+router.post('/refresh', authController.refresh);
+
 module.exports = router;
