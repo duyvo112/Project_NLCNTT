@@ -108,6 +108,15 @@ const postController = {
             res.status(500).json({ msg: error.message });
         }
     },
+    getPostByFriends: async (req, res) => {
+        try {
+            const user = await User.findById(req.user.id);
+            const posts = await Post.find({ user: [...user.friends, req.user.id] }).sort({ createdAt: -1 });
+            return res.json(posts);
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
 };
 
 module.exports = postController;
