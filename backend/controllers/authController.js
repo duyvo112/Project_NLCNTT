@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
+refreshTokens = [];
 const authController = {
     // REGISTER
     register: async (req, res) => {
@@ -51,6 +51,7 @@ const authController = {
     login: async (req, res) => {
         try {
             const user = await User.findOne({ email: req.body.email });
+            console.log(req.body.email);
             if (!user) {
                 return res.status(404).json("User not found");
             }
@@ -75,16 +76,30 @@ const authController = {
         }
     },
     logout: async (req, res) => {
-      try {
-        res.clearCookie("refreshToken");
-        refreshTokens = refreshTokens.filter(
-          (token) => token !== req.cookies.refreshToken
-        );
-        return res.status(200).json("User has been logged out");
-      } catch (error) {
-        return res.status(500).json(error);
-      }
-    },
+        try {
+          // Kiểm tra xem cookie có tồn tại không
+          if (!req.cookies.refreshToken) {
+            return res.status(400).json("No refresh token found");
+          }
+      
+          // Xóa cookie
+          res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+          });
+      
+          // Xóa refresh token khỏi danh sách
+          refreshTokens = refreshTokens.filter(
+            (token) => token !== req.cookies.refreshToken
+          );
+      
+          return res.status(200).json("User has been logged out");
+        } catch (error) {
+          return res.status(500).json(error);
+        }
+      },
     me: async (req, res) => {
         try {
             const user = await User.findById(req.user.id).select("-password");
