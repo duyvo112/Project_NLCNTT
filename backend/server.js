@@ -14,7 +14,10 @@ const server = createServer(app);
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Chỉ định đúng origin
+    credentials: true, // Cho phép gửi cookie & header xác thực
+}));
 // Connect to MongoDB
 connectDB();
 
