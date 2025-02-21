@@ -2,65 +2,68 @@
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="login-box p-4 rounded">
             <!-- Logo -->
-            <h2 class="text-center mb-4 instagram-logo">Instagram</h2>
+            <h2 class="text-center mb-4 logo">FriendGram</h2>
 
             <!-- Form đăng nhập -->
-            <form @submit.prevent="handleLogin">
+            <form @submit.prevent="handleLogin" method="POST">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Phone number, email or username"
-                        v-model="username" required />
+                    <input type="text" class="form-control" placeholder="email" v-model="this.form.email" required />
                 </div>
                 <div class="mb-3 position-relative">
                     <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password"
-                        v-model="password" required />
+                        v-model="this.form.password" required />
                     <span @click="togglePassword" class="eye-icon">
-                        👁
+                        <font-awesome-icon :icon="['fas', 'eye']" />
                     </span>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Log In</button>
             </form>
-
-            <!-- Quên mật khẩu -->
-            <div class="text-center mt-2">
-                <a href="#" class="text-decoration-none">Get help logging in.</a>
-            </div>
-
-            <!-- Hoặc -->
-            <div class="text-center mt-3">
-                <span class="or-line">OR</span>
-            </div>
-
-            <!-- Đăng nhập Facebook -->
-            <div class="text-center mt-3">
-                <a href="#" class="text-primary fw-bold">Log in with Facebook</a>
-            </div>
-
             <!-- Đăng ký -->
             <div class="text-center mt-3">
-                <span>Don't have an account? <a href="#" class="fw-bold">Sign up.</a></span>
+                <span>Don't have an account? <router-link :to="{ name: 'RegisterPage' }"><a href="#"
+                            class="fw-bold">Sign
+                            up.</a></router-link></span>
+
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import socialMediaApi from '../services/socialMediaApi.service';
+import { useUserStore } from '../stores/userStore';
 export default {
     name: "LoginPage",
     data() {
         return {
-            username: "",
-            password: "",
+            form: {
+                email: "",
+                password: "",
+            },
             showPassword: false,
         };
     },
     methods: {
         handleLogin() {
-            alert("Login clicked! (Chưa có API xử lý)");
+            socialMediaApi.login(this.form)
+                .then((response) => {
+                    const { data } = response;
+                    console.log("datta", data);
+                    // Lưu accessToken vào localStorage
+                    useUserStore().setAccessToken(data.accessToken);
+                    useUserStore().setUser(data, data.accessToken);
+                    // Chuyển hướng đến trang home
+                    this.$router.push({ name: "HomePage" });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         togglePassword() {
             this.showPassword = !this.showPassword;
         },
     },
+
 };
 </script>
 
@@ -74,7 +77,7 @@ export default {
     text-align: center;
 }
 
-.instagram-logo {
+.logo {
     font-family: "Brush Script MT", cursive;
     font-size: 32px;
 }
