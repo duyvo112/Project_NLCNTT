@@ -24,6 +24,8 @@
                             class="fw-bold">Sign
                             up.</a></router-link></span>
 
+
+
             </div>
         </div>
     </div>
@@ -51,9 +53,11 @@ export default {
                     console.log("datta", data);
                     // Lưu accessToken vào localStorage
                     useUserStore().setAccessToken(data.accessToken);
-                    useUserStore().setUser(data, data.accessToken);
+                    useUserStore().setUser(data);
+                    localStorage.setItem("accessToken", data.accessToken);
                     // Chuyển hướng đến trang home
                     this.$router.push({ name: "HomePage" });
+
                 })
                 .catch((error) => {
                     console.log(error);
