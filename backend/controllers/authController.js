@@ -7,7 +7,7 @@ const authController = {
     // REGISTER
     register: async (req, res) => {
         try {
-            if (!req.body.username || !req.body.email || !req.body.password) {
+            if (!req.body.username || !req.body.email || !req.body.password || !req.body.fullname) {
                 return res.status(400).json("All fields are required");
             }
             const salt = await bcrypt.genSalt(10);
@@ -16,6 +16,7 @@ const authController = {
             // Create User
             const newUser = new User({
                 username: req.body.username,
+                fullname: req.body.fullname,
                 email: req.body.email,
                 password: hashed,
             });
@@ -51,7 +52,6 @@ const authController = {
     login: async (req, res) => {
         try {
             const user = await User.findOne({ email: req.body.email });
-            console.log(req.body.email);
             if (!user) {
                 return res.status(404).json("User not found");
             }
@@ -111,19 +111,32 @@ const authController = {
     refresh: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) return res.status(401).json("You are not authenticated");
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-          err && console.log(err);
-          const newAccessToken = authController.generateAccessToken(user);
-          const newRefreshToken = authController.generateRefreshToken(user);
-          res.cookie("refreshToken", newRefreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: "/",
-            sameSite: "strict",
-          })
-         res.status(200).json({ accessToken: newAccessToken });
+    
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+            if (err) return res.status(403).json("Refresh token is not valid");
+    
+            try {
+                const user = await User.findById(decoded.id); // Tìm user theo ID từ token
+                if (!user) return res.status(404).json("User not found");
+    
+                // Tạo Access Token mới với dữ liệu từ user
+                const newAccessToken = authController.generateAccessToken(user);
+                const newRefreshToken = authController.generateRefreshToken(user);
+    
+                res.cookie("refreshToken", newRefreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                });
+    
+                return res.status(200).json({ accessToken: newAccessToken });
+            } catch (error) {
+                return res.status(500).json(error);
+            }
         });
-    },
+    }
+    
 };
 
 module.exports = authController;
