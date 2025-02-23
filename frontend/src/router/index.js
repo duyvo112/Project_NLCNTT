@@ -21,6 +21,13 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
+        path: '/user/:id',
+        name: 'UserProfile',
+        component: () => import('../views/UserProfile.vue'),
+        props: true
+    }
+    ,    
+    {
         path: "/:pathMatch(.*)*",
         redirect: "/login"
     }
