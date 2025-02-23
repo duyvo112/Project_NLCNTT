@@ -1,69 +1,71 @@
 <template>
     <div class="suggestions p-3">
+        <!-- Hiển thị profile của user -->
         <div class="profile d-flex align-items-center justify-content-center">
-
-
-            <router-link class="text-decoration-none" :to="{ name: 'RegisterPage' }"><a href="#"
-                    class="user-detail flex-grow-1 d-flex align-items-center text-decoration-none text-dark">
-                    <img src="https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg"
-                        alt="Profile picture" class="rounded-circle w-10 me-2" />
+            <router-link :to="{ name: 'UserProfile', params: { id: user._id } }" class="text-decoration-none">
+                <div class="user-detail flex-grow-1 d-flex align-items-center text-decoration-none text-dark">
+                    <img :src="user.avatar" alt="Profile picture" class="rounded-circle w-10 me-2" />
                     <h5 class="mb-0">{{ user.username }}</h5>
-                </a></router-link>
-
-            <div class="logout ">
+                </div>
+            </router-link>
+            <div class="logout">
                 <a href="#" @click="Logout" class="text-decoration-none">Logout</a>
             </div>
-
         </div>
-        <h5 class="mt-3">Your Friend</h5>
+
+        <!-- Hiển thị danh sách bạn bè -->
+        <h5 class="mt-3">Your Friends</h5>
         <ul class="list-group">
-            <li v-for="user in friends" :key="user.id" class="list-group-item d-flex align-items-center">
-                <img src="https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a"
-                    alt="" class="rounded-circle w-10 me-2" />
-                <strong>{{ user.name }}</strong>
+            <li v-for="friend in friends" :key="friend._id" class="list-group-item d-flex align-items-center">
+                <router-link :to="{ name: 'UserProfile', params: { id: friend._id } }"
+                    class="text-decoration-none text-dark">
+                    <img :src="friend.avatar" alt="Friend's profile picture" class="rounded-circle w-10 me-2" />
+                    <strong>{{ friend.username }}</strong>
+                </router-link>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
-import socialMediaApi from '../services/socialMediaApi.service';
-import { useUserStore } from '../stores/userStore';
+import { useUserStore } from "../stores/userStore";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import socialMediaApi from "../services/socialMediaApi.service";
+
 export default {
-    name: 'SuggestionsBar',
-    data() {
-        return {
-            user: useUserStore().user,
-            friends: [
-                { id: 1, name: "Charlie" },
-                { id: 2, name: "David" },
-            ],
+    name: "SuggestionsBar",
+    setup() {
+        const userStore = useUserStore();
+        const router = useRouter();
+
+        // Lấy dữ liệu từ store
+        const user = computed(() => userStore.user);
+        const friends = computed(() => userStore.friends); // ✅ Lấy danh sách bạn bè từ store
+
+        // Hàm logout
+        const Logout = async () => {
+            try {
+                await socialMediaApi.logout();
+                userStore.logout();
+                localStorage.removeItem("accessToken");
+                router.push({ name: "LoginPage" });
+            } catch (error) {
+                console.log(error);
+            }
         };
-    },
-    methods: {
-        Logout() {
-            socialMediaApi.logout()
-                .then(() => {
-                    useUserStore().logout();
-                    localStorage.removeItem('accessToken');
-                    this.$router.push({ name: 'LoginPage' });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
 
-        },
-
+        return { user, friends, Logout };
     },
     created() {
-        console.log("in us", this.user.username);
-    },
+        useUserStore().fetchFriends(useUserStore().user._id);
+    }
 };
 </script>
 
 <style scoped>
 .w-10 {
-    width: 10%;
+    width: 18%;
 }
 
 .suggestions {
