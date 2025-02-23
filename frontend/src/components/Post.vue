@@ -1,42 +1,71 @@
 <template>
     <div class="card mb-4">
-        <div class="card-header">
-            <img src="https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a"
-                alt="" class="w-10 rounded-circle" />
-            <strong>
-                Võ Đức Duy
-            </strong>
-
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <router-link class="text-decoration-none text-dark"
+                :to="{ name: 'UserProfile', params: { id: post.user._id } }">
+                <img :src="post.user.avatar" class="rounded-circle w-10" alt="User avatar" />
+                <span class="ms-2 fs-5">{{ post.user.username }}</span>
+            </router-link>
+            <!-- Dấu X để xóa -->
+            <button v-if="isOwner" @click="deletePost" class="btn btn-close pb-4">
+            </button>
         </div>
-        <img :src="post.image" class="card-img-top" alt="Post image" />
+        <img :src="post.imageUrl" class="card-img-top" alt="Post image" />
         <div class="card-body">
             <p>{{ post.caption }}</p>
             <div class="react">
-                <button class="btn btn-outline-danger me-4" @click="likePost">❤️ {{ post.likes }}</button>
-
+                <button class="btn me-4 like-btn" @click="likePost">
+                    <font-awesome-icon :icon="['fas', 'heart']" :class="{ 'liked': likedByUser }" />
+                    <span class="ms-2">{{ likes }}</span>
+                </button>
                 <Comment :comments="post.comments" :postId="post.id" />
-
             </div>
         </div>
         <div class="card-footer">
-            <small class="text-muted
-            ">Posted 3 mins ago</small>
+            <small class="text-muted">{{ timeAgo(post.createdAt) }}</small>
         </div>
-
     </div>
 </template>
 
 <script>
 import Comment from './Comment.vue';
+import { usePostStore } from '@/stores/postStore';
+import { useUserStore } from '@/stores/userStore';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
 export default {
     name: 'NewPost',
     props: ["post"],
     components: { Comment },
-    methods: {
-        likePost() {
-            this.$emit('update-likes');
+    data() {
+        return {
+            postStore: usePostStore(),
+            userStore: useUserStore(),
+            likes: Array.isArray(this.post.likes) ? this.post.likes.length : 0,
+            likedByUser: Array.isArray(this.post.likes) && this.post.likes.includes(useUserStore().user._id),
+        };
+    },
+    computed: {
+        isOwner() {
+            return this.userStore.user._id === this.post.user._id; // Chỉ chủ bài viết có thể xóa
         }
-
+    },
+    methods: {
+        timeAgo(date) {
+            dayjs.extend(relativeTime);
+            return dayjs(date).fromNow();
+        },
+        async likePost() {
+            await this.postStore.likePost(this.post._id);
+            this.likedByUser = !this.likedByUser;
+            this.likes += this.likedByUser ? 1 : -1;
+        },
+        async deletePost() {
+            if (confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
+                await this.postStore.deletePost(this.post._id);
+            }
+        }
     },
 };
 </script>
@@ -49,5 +78,16 @@ export default {
 .rounded-circle {
     border-radius: 50%;
     background-color: white;
+}
+
+/* Mặc định màu đen */
+.like-btn .fa-heart {
+    color: black;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Khi đã like thì chuyển sang màu đỏ */
+.like-btn .liked {
+    color: red;
 }
 </style>
