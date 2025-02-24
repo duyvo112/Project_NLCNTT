@@ -14,9 +14,13 @@ const userController = {
   },
   updateUser: async (req, res) => {
     try {
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-        new: true,
-      });
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
       return res.json(updatedUser);
     } catch (error) {
       res.status(500).json({ error: "Lỗi cập nhật thông tin" });
@@ -139,11 +143,17 @@ const userController = {
     try {
       const user = await User.findById(req.user.id);
       const friend = await User.findById(req.params.id);
-      if(!friend) return res.status(404).json({ error: "Không tìm thấy người dùng" });
-      if(!user.friends.includes(req.params.id)) return res.status(400).json({ error: "Không phải là bạn bè" });
+      if (!friend)
+        return res.status(404).json({ error: "Không tìm thấy người dùng" });
+      if (!user.friends.includes(req.params.id))
+        return res.status(400).json({ error: "Không phải là bạn bè" });
       // Xóa bạn bè
-      user.friends = user.friends.filter((friend) => friend.toString() !== req.params.id);
-      friend.friends = friend.friends.filter((friend) => friend.toString() !== req.user.id);
+      user.friends = user.friends.filter(
+        (friend) => friend.toString() !== req.params.id
+      );
+      friend.friends = friend.friends.filter(
+        (friend) => friend.toString() !== req.user.id
+      );
       await user.save();
       await friend.save();
       res.json({ message: "Xóa bạn bè thành công" });
