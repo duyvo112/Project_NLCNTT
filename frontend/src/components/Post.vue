@@ -18,7 +18,7 @@
                     <font-awesome-icon :icon="['fas', 'heart']" :class="{ 'liked': likedByUser }" />
                     <span class="ms-2">{{ likes }}</span>
                 </button>
-                <Comment :comments="post.comments" :postId="post.id" />
+                <Comment :postId="post._id" />
             </div>
         </div>
         <div class="card-footer">
@@ -72,7 +72,7 @@ export default {
 
 <style scoped>
 .w-10 {
-    width: 7%;
+    width: 8%;
 }
 
 .rounded-circle {
