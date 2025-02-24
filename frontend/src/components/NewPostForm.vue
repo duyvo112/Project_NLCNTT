@@ -10,17 +10,23 @@
         <textarea v-model="caption" class="form-control mb-3" placeholder="Write a caption..." rows="3"></textarea>
 
         <!-- Submit Button -->
-        <button class="btn btn-primary w-100" @click="submitPost">Post</button>
+        <button class="btn btn-primary w-100" @click="submitPost" :disabled="isLoading">
+            <span v-if="isLoading" class="spinner-border spinner-border-sm"></span>
+            <span v-else>Post</span>
+        </button>
     </div>
 </template>
 
 <script>
+import { usePostStore } from '../stores/postStore';
+
 export default {
     data() {
         return {
-            caption: "",
             imageFile: null,
+            caption: "",
             previewImage: null,
+            isLoading: false,
         };
     },
     methods: {
@@ -31,23 +37,32 @@ export default {
                 this.previewImage = URL.createObjectURL(file);
             }
         },
-        submitPost() {
+
+        async submitPost() {
             if (!this.imageFile || !this.caption) {
                 alert("Please select an image and write a caption.");
                 return;
             }
 
+            this.isLoading = true;
             const formData = new FormData();
             formData.append("image", this.imageFile);
             formData.append("caption", this.caption);
 
-            this.$emit("post-submitted", formData);
+            try {
+                const response = await usePostStore().createPost(formData);
+                console.log(response);
 
-            // Reset form
-            this.caption = "";
-            this.imageFile = null;
-            this.previewImage = null;
-        },
+                // Reset form sau khi đăng bài thành công
+                this.caption = "";
+                this.imageFile = null;
+                this.previewImage = null;
+            } catch (error) {
+                console.error("Error creating post:", error);
+            } finally {
+                this.isLoading = false; // ✅ Tắt loading dù thành công hay thất bại
+            }
+        }
     },
 };
 </script>
