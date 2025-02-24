@@ -5,6 +5,7 @@ import socialMediaApi from '@/services/socialMediaApi.service'
 export const usePostStore = defineStore('post', {
   state: () => ({
     posts: [],
+    comments: [],
   }),
   actions: {
     async getPosts() {
@@ -24,13 +25,37 @@ export const usePostStore = defineStore('post', {
         return []
       }
     },
-
+    async createPost(data) {
+      try {
+        const response = await socialMediaApi.createPost(data)
+        this.posts.push(response.data)
+        await this.getPosts()
+      } catch (error) {
+        console.error('Error creating post:', error)
+      }
+    },
     async likePost(id) {
       try {
         await socialMediaApi.likePost(id)
         await this.getPostbyUser(useUserStore().user._id)
       } catch (error) {
         console.error(error)
+      }
+    },
+    async getComments(id) {
+      try {
+        const response = await socialMediaApi.getComments(id)
+        return response.data
+      } catch (error) {
+        console.error('Error fetching comments:', error)
+      }
+    },
+    async addComment(id, data) {
+      try {
+        const response = await socialMediaApi.addComment(id, data)
+        return response.data
+      } catch (error) {
+        console.error('Error adding comment:', error)
       }
     },
   },
