@@ -8,18 +8,17 @@
             <!-- Form đăng ký -->
             <form @submit.prevent="handleRegister">
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="Mobile Number or Email" v-model="email"
-                        required />
+                    <input type="text" class="form-control" placeholder="Email" v-model="form.email" required />
                 </div>
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="Full Name" v-model="fullName" required />
+                    <input type="text" class="form-control" placeholder="Full Name" v-model="form.fullname" required />
                 </div>
                 <div class="mb-2">
-                    <input type="text" class="form-control" placeholder="Username" v-model="username" required />
+                    <input type="text" class="form-control" placeholder="Username" v-model="form.username" required />
                 </div>
                 <div class="mb-2 position-relative">
                     <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password"
-                        v-model="password" required />
+                        v-model="form.password" required />
                     <span @click="togglePassword" class="eye-icon"><font-awesome-icon :icon="['fas', 'eye']" /></span>
                 </div>
                 <p class="text-muted text-center small">
@@ -37,20 +36,33 @@
 </template>
 
 <script>
+import { useUserStore } from '../stores/userStore';
 export default {
     name: "RegisterPage",
     data() {
         return {
-            email: "",
-            fullName: "",
-            username: "",
-            password: "",
+            form: {
+                email: "",
+                fullname: "",
+                username: "",
+                password: "",
+            },
             showPassword: false,
+            userStore: useUserStore(),
         };
     },
     methods: {
         handleRegister() {
-            alert("Register clicked! (Chưa có API xử lý)");
+            this.userStore.register(this.form).then((response) => {
+                console.log(response);
+                if (response.status === 200) {
+                    this.$router.push('/login');
+                }
+            }).catch((error) => {
+                if (error.response.status === 500) {
+                    alert("Email or username already exists");
+                }
+            });
         },
         togglePassword() {
             this.showPassword = !this.showPassword;
