@@ -2,12 +2,12 @@
     <div class="container-fluid p-0">
         <div class="row">
             <!-- Cột trái -->
-            <div class="col-md-2 d-none d-md-block border-end p-0 ">
+            <div class="col-md-2 d-none d-md-block border-end p-0">
                 <Sidebar class="sidebar-container" />
             </div>
 
             <!-- Cột giữa -->
-            <div class="col-md-7">
+            <div class="col-md-7 d-flex justify-content-center">
                 <Feed />
             </div>
 
@@ -50,6 +50,7 @@ export default {
     top: 0;
     bottom: 0;
     overflow-y: auto;
+    width: calc(2/12 * 100%);
 }
 
 .scroll-to-top {
