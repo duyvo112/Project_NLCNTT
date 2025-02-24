@@ -35,11 +35,23 @@ export const useUserStore = defineStore('user', {
         console.error('Error fetching friends:', error)
       }
     },
+    async updateUser(userId, updatedUser) {
+      try {
+        const response = await socialMediaApi.updateUser(userId, updatedUser)
+        this.user = response.data
+      } catch (error) {
+        console.error('Error updating user:', error)
+      }
+    },
     setUser(userData) {
       this.user = userData
     },
     setAccessToken(token) {
       this.accessToken = token
+    },
+    register(userData) {
+      console.log(userData)
+      return socialMediaApi.register(userData)
     },
     logout() {
       localStorage.removeItem('post')
