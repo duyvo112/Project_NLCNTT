@@ -13,10 +13,16 @@
                 </router-link>
             </li>
             <li class="nav-item m-1">
-                <router-link class="nav-link" :to="{ name: 'UserProfile', params: { id: userId } }">
-                    <font-awesome-icon class="nav-icon" :icon="['fas', 'user']" />
-                    <span>Profile</span>
+                <router-link class="nav-link" :to="{ name: 'ExplorePage' }">
+                    <font-awesome-icon class="nav-icon" :icon="['fas', 'compass']" />
+                    <span>Explore</span>
                 </router-link>
+            </li>
+            <li class="nav-item m-1">
+                <a class="nav-link" href="#" @click="openSearchModal">
+                    <font-awesome-icon class="nav-icon" :icon="['fas', 'search']" />
+                    <span>Search</span>
+                </a>
             </li>
             <li class="nav-item m-1">
                 <a :class="notificationCount > 0 ? 'nav-link text-danger' : 'nav-link'" href="#"
@@ -25,12 +31,17 @@
                     <span>Notifications ({{ notificationCount }})</span>
                 </a>
             </li>
+            <router-link v-if="userId" class="nav-link" :to="{ name: 'UserProfile', params: { id: userId } }">
+                <font-awesome-icon class="nav-icon" :icon="['fas', 'user']" />
+                <span>Profile</span>
+            </router-link>
+
         </ul>
 
         <!-- Notification Modal -->
         <NotificationComponent :isOpen="isNotificationOpen" @close="isNotificationOpen = false" :userId="userId"
             @countNotification="updateNotificationCount" />
-
+        <SearchModal :isOpen="isSearchOpen" @close="isSearchOpen = false" />
     </div>
 </template>
 
@@ -38,20 +49,26 @@
 import { computed, ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import NotificationComponent from "@/components/Notification.vue";
+import SearchModal from "@/components/SearchModal.vue";
 
 export default {
     name: "SideBar",
-    components: { NotificationComponent },
+    components: { NotificationComponent, SearchModal },
     setup() {
         const userStore = useUserStore();
         const userId = computed(() => userStore.user?._id);
         const isNotificationOpen = ref(false);
+        const isSearchOpen = ref(false);
 
         const openNotification = () => {
             isNotificationOpen.value = true;
         };
 
-        return { userId, isNotificationOpen, openNotification };
+        const openSearchModal = () => {
+            isSearchOpen.value = true;
+        };
+
+        return { userId, isNotificationOpen, openNotification, isSearchOpen, openSearchModal };
     },
     data() {
         return {

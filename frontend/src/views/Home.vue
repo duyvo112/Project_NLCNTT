@@ -1,6 +1,7 @@
 <template>
     <div class="container-fluid p-0">
-        <div class="row">
+
+        <div class="row pt-2">
             <!-- Cột trái -->
             <div class="col-md-2 d-none d-md-block border-end p-0">
                 <Sidebar class="sidebar-container" />

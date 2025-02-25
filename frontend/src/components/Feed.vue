@@ -21,11 +21,9 @@ export default {
         const postStore = usePostStore();
         const posts = computed(() => postStore.posts);
 
-        // ✅ Tải danh sách tất cả bài viết khi component mount
         onMounted(() => {
             postStore.getPosts();
-        });
-
+        })
         return { posts };
     }
 };

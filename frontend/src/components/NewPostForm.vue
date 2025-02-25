@@ -51,12 +51,11 @@ export default {
 
             try {
                 const response = await usePostStore().createPost(formData);
-                console.log(response);
-
-                // Reset form sau khi đăng bài thành công
-                this.caption = "";
-                this.imageFile = null;
-                this.previewImage = null;
+                if (response) {
+                    this.caption = "";
+                    this.imageFile = null;
+                    this.previewImage = null;
+                }
             } catch (error) {
                 console.error("Error creating post:", error);
             } finally {

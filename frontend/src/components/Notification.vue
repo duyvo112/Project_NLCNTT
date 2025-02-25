@@ -2,7 +2,7 @@
     <div v-if="isOpen" class="modal-overlay">
         <div class="modal-content w-50">
             <div class="modal-header">
-                <h5 class="modal-title">Thông báo</h5>
+                <h5 class="modal-title">Notification</h5>
                 <button type="button" class="close" @click="closeModal">
                     <span>&times;</span>
                 </button>
@@ -30,7 +30,7 @@
 
                     </div>
                     <div v-else>
-                        <p>Không có thông báo mới</p>
+                        <p>No new notifications</p>
                     </div>
                 </div>
             </div>

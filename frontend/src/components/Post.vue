@@ -7,7 +7,7 @@
                 <span class="ms-2 fs-5">{{ post.user.username }}</span>
             </router-link>
             <!-- Dấu X để xóa -->
-            <button v-if="isOwner" @click="deletePost" class="btn btn-close pb-4">
+            <button v-if="isOwner" @click="deletePost(post._id)" class="btn btn-close pb-4">
             </button>
         </div>
         <img :src="post.imageUrl" class="card-img-top" alt="Post image" />
@@ -61,12 +61,24 @@ export default {
             this.likedByUser = !this.likedByUser;
             this.likes += this.likedByUser ? 1 : -1;
         },
-        async deletePost() {
+        async deletePost(id) {
             if (confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
-                await this.postStore.deletePost(this.post._id);
+                // Xóa post ngay trên UI
+                this.$emit('delete-post', id);
+
+                // Gọi API xóa post
+                try {
+                    await this.postStore.deletePost(id);
+                } catch (error) {
+                    console.error("Lỗi khi xóa bài viết:", error);
+                }
             }
         }
+
     },
+    mounted() {
+        this.postStore.getPosts();
+    }
 };
 </script>
 
