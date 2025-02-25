@@ -28,10 +28,20 @@ export const usePostStore = defineStore('post', {
     async createPost(data) {
       try {
         const response = await socialMediaApi.createPost(data)
-        this.posts.push(response.data)
         await this.getPosts()
+        return response.data
       } catch (error) {
         console.error('Error creating post:', error)
+      }
+    },
+    async deletePost(id) {
+      try {
+        await socialMediaApi.deletePost(id)
+        this.posts = this.posts.filter((post) => post._id !== id)
+        await useUserStore().getPostbyUser(useUserStore().user._id)
+        await this.getPosts()
+      } catch (error) {
+        console.error('Error deleting post:', error)
       }
     },
     async likePost(id) {
@@ -59,5 +69,6 @@ export const usePostStore = defineStore('post', {
       }
     },
   },
+
   persist: true,
 })

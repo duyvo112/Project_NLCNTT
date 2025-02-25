@@ -93,7 +93,14 @@ export const useUserStore = defineStore('user', {
         console.error('Error deleting friend:', error)
       }
     },
-
+    async searchUsers(username) {
+      try {
+        const response = await socialMediaApi.searchUsers(username)
+        return response.data
+      } catch (error) {
+        console.error('Error searching users:', error)
+      }
+    },
     setUser(userData) {
       this.user = userData
     },
