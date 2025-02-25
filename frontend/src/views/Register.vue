@@ -19,7 +19,9 @@
                 <div class="mb-2 position-relative">
                     <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password"
                         v-model="form.password" required />
-                    <span @click="togglePassword" class="eye-icon"><font-awesome-icon :icon="['fas', 'eye']" /></span>
+                    <span @click="togglePassword" class="eye-icon"><font-awesome-icon :icon="['fas', 'eye']"
+                            v-if="!showPassword" />
+                        <font-awesome-icon :icon="['fas', 'eye-slash']" v-else /></span>
                 </div>
                 <p class="text-muted text-center small">
                     By signing up, you agree to our Terms, Privacy Policy and Cookies Policy.

@@ -13,7 +13,8 @@
                     <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password"
                         v-model="this.form.password" required />
                     <span @click="togglePassword" class="eye-icon">
-                        <font-awesome-icon :icon="['fas', 'eye']" />
+                        <font-awesome-icon :icon="['fas', 'eye']" v-if="!showPassword" />
+                        <font-awesome-icon :icon="['fas', 'eye-slash']" v-else />
                     </span>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Log In</button>
