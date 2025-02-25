@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
     user: null,
     accessToken: null,
     friends: [],
+    friendRequests: [],
   }),
   getters: {
     isAuthenticated() {
@@ -43,6 +44,56 @@ export const useUserStore = defineStore('user', {
         console.error('Error updating user:', error)
       }
     },
+    async addFriend(userId) {
+      try {
+        const response = await socialMediaApi.addFriend(userId)
+        this.friends.push(response.data)
+      } catch (error) {
+        console.error('Error adding friend:', error)
+        if (error.response.status === 400) {
+          alert('You have already sent a friend request to this user')
+        }
+      }
+    },
+    async fetchFriendRequests(userId) {
+      try {
+        const response = await socialMediaApi.getUserFriendRequests(userId)
+        this.friendRequests = response.data
+      } catch (error) {
+        console.error('Error fetching friend requests:', error)
+      }
+    },
+    async acceptFriendRequest(requestId) {
+      try {
+        await socialMediaApi.acceptFriendRequest(requestId)
+        this.friendRequests = this.friendRequests.filter((request) => request._id !== requestId)
+        this.friends.push(requestId)
+        this.fetchFriendRequests(this.user._id)
+        this.fetchFriends(this.user._id)
+      } catch (error) {
+        console.error('Error accepting friend request:', error)
+      }
+    },
+    async rejectFriendRequest(requestId) {
+      try {
+        await socialMediaApi.rejectFriendRequest(requestId)
+        this.friendRequests = this.friendRequests.filter((request) => request._id !== requestId)
+      } catch (error) {
+        console.error('Error rejecting friend request:', error)
+      }
+    },
+    async deleteFriend(friendId) {
+      try {
+        await socialMediaApi.deleteFriend(friendId)
+        this.friends = this.friends.filter((friend) => friend._id !== friendId)
+        this.fetchFriends(this.user._id)
+        this.fetchFriendRequests(this.user._id)
+        this.fetchUser(this.user._id)
+      } catch (error) {
+        console.error('Error deleting friend:', error)
+      }
+    },
+
     setUser(userData) {
       this.user = userData
     },

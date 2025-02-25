@@ -11,6 +11,7 @@
                 <div class="profile-container">
                     <div class="profile-header d-flex align-items-center">
                         <!-- Avatar và nút Edit Profile -->
+
                         <div class="profile-left d-flex flex-column align-items-center">
                             <img :src="user.avatar" alt="Profile" class="w-10 profile-image rounded-circle">
                             <a v-if="isOwner" href="#" @click.prevent="openEditModal"
@@ -18,6 +19,24 @@
                                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
                                 Edit profile
                             </a>
+                            <div class="m-3" v-if="!isOwner && !isFriend && !isRequest">
+                                <button class="btn btn-outline-primary" @click.prevent="addFriend">Add Friend</button>
+                            </div>
+                            <div class="m-3" v-if="!isOwner && !isFriend && isRequest">
+                                <button class="btn btn-outline-primary"
+                                    @click.prevent="acceptFriendRequest(user._id)">Accept
+                                    Friend</button>
+                            </div>
+                            <div class="m-3" v-if="!isOwner && !isFriend && isRequest">
+                                <button class="btn btn-outline-primary"
+                                    @click.prevent="rejectFriendRequest(user._id)">Reject
+                                    Friend</button>
+                            </div>
+                            <div class="m-3" v-if="isFriend">
+                                <button class="btn btn-outline-primary" @click.prevent="deleteFriend(user._id)">Remove
+                                    Friend</button>
+                            </div>
+
                         </div>
 
                         <!-- Thông tin cá nhân -->
@@ -32,6 +51,8 @@
                                 <p>{{ user.about }}</p>
                             </div>
                         </div>
+
+
                     </div>
 
                     <hr />
@@ -114,16 +135,64 @@ export default {
             }
         };
 
+        const addFriend = async () => {
+            try {
+                console.log("Adding friend:", route.params.id);
+                await userStore.addFriend(route.params.id);
+            } catch (error) {
+                console.error("Error adding friend:", error);
+
+            }
+        };
+
+
+        const acceptFriendRequest = async (requestId) => {
+            try {
+                await userStore.acceptFriendRequest(requestId);
+                loadUserProfile();
+            } catch (error) {
+                console.error("Error accepting friend request:", error);
+            }
+        };
+        const deleteFriend = async (friendId) => {
+            try {
+                await userStore.deleteFriend(friendId);
+                loadUserProfile();
+            } catch (error) {
+                console.error("Error deleting friend:", error);
+            }
+        };
+
         onMounted(loadUserProfile);
         watch(() => route.params.id, loadUserProfile);
 
-        return { user, posts, isLoading, isModalOpen, openEditModal, closeEditModal, updateUserInfo };
+        return {
+            user,
+            posts,
+            isLoading,
+            isModalOpen,
+            openEditModal,
+            closeEditModal,
+            updateUserInfo,
+            addFriend,
+            acceptFriendRequest,
+            deleteFriend
+        };
     },
     computed: {
         isOwner() {
             const userStore = useUserStore();
             return userStore.user._id === this.$route.params.id;
-        }
+        },
+        isFriend() {
+            const userStore = useUserStore();
+            return userStore.friends.some(friend => friend._id === this.$route.params.id);
+        },
+        isRequest() {
+            const userStore = useUserStore();
+            return userStore.friendRequests.some(request => request._id === this.$route.params.id);
+        },
+
     }
 };
 </script>

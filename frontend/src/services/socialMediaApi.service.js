@@ -19,6 +19,11 @@ const socialMediaApi = {
   addComment: (id, data) => axiosInstance.put(`/api/post/comment/${id}`, data),
   //Friends
   getFriends: (id) => axiosInstance.get(`/api/user/friends/${id}`),
+  addFriend: (id) => axiosInstance.put(`/api/user/send-request/${id}`),
+  getUserFriendRequests: (id) => axiosInstance.get(`/api/user/friend-requests/${id}`),
+  acceptFriendRequest: (id) => axiosInstance.put(`/api/user/accept-request/${id}`),
+  rejectFriendRequest: (id) => axiosInstance.put(`/api/user/reject-request/${id}`),
+  deleteFriend: (id) => axiosInstance.put(`/api/user/delete-friend/${id}`),
 }
 
 export default socialMediaApi
