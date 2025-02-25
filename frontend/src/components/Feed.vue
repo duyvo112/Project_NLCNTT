@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NewPostForm class="w-100" @post-submitted="handleNewPost" />
+        <NewPostForm class="w-100" />
         <hr />
         <div class="h1">NewsFeed</div>
         <div class="feed w-85 container">
