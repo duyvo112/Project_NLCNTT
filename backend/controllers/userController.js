@@ -161,5 +161,25 @@ const userController = {
       res.status(500).json({ error: "Lỗi xóa bạn bè" });
     }
   },
+  searchUser: async (req, res) => {
+    try {
+      const { username } = req.query;
+      const currentUserId = req.user.id; // Lấy _id của người dùng hiện tại
+
+      // Nếu không có username hoặc username là chuỗi rỗng, trả về mảng rỗng
+      if (!username || username.trim() === "") {
+        return res.json([]);
+      }
+
+      const users = await User.find({
+        username: { $regex: username, $options: "i" },
+        _id: { $ne: currentUserId }, // Loại bỏ chính mình
+      });
+
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: "Lỗi tìm kiếm người dùng" });
+    }
+  },
 };
 module.exports = userController;
