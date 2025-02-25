@@ -1,41 +1,82 @@
-const userController = require('../controllers/userController');
-const router = require('express').Router();
-const authMiddleware = require('../middlewares/authMiddleware');
-const upload = require('../config/Multer');
+const userController = require("../controllers/userController");
+const router = require("express").Router();
+const authMiddleware = require("../middlewares/authMiddleware");
+const upload = require("../config/Multer");
 
 // Update User
-router.put('/:id', authMiddleware.verifyTokenAndUserAuthorization, userController.updateUser);
+router.put(
+  "/:id",
+  authMiddleware.verifyTokenAndUserAuthorization,
+  userController.updateUser
+);
 
 // Update User Avatar
-router.put('/update-avatar', authMiddleware.verifyToken, upload.single("image"), userController.updateAvatar);
+router.put(
+  "/update-avatar",
+  authMiddleware.verifyToken,
+  upload.single("image"),
+  userController.updateAvatar
+);
+
+// Search User
+
+router.get("/search", authMiddleware.verifyToken, userController.searchUser);
 
 // Get User
-router.get('/:id', userController.getUser);
+router.get("/:id", userController.getUser);
 
 // Delete User
-router.delete('/:id', authMiddleware.verifyTokenAndUserAuthorization, userController.deleteUser);
+router.delete(
+  "/:id",
+  authMiddleware.verifyTokenAndUserAuthorization,
+  userController.deleteUser
+);
 
 // Send Friend Request
 
-router.put('/send-request/:id', authMiddleware.verifyToken, userController.sendFriendRequest);
+router.put(
+  "/send-request/:id",
+  authMiddleware.verifyToken,
+  userController.sendFriendRequest
+);
 
 // Accept Friend Request
 
-router.put('/accept-request/:id', authMiddleware.verifyToken, userController.acceptFriendRequest);
+router.put(
+  "/accept-request/:id",
+  authMiddleware.verifyToken,
+  userController.acceptFriendRequest
+);
 module.exports = router;
 
 // Reject Friend Request
 
-router.put('/reject-request/:id', authMiddleware.verifyToken, userController.rejectFriendRequest);
+router.put(
+  "/reject-request/:id",
+  authMiddleware.verifyToken,
+  userController.rejectFriendRequest
+);
 
 // Get User Friends
 
-router.get('/friends/:id',authMiddleware.verifyToken, userController.getUserFriends);
+router.get(
+  "/friends/:id",
+  authMiddleware.verifyToken,
+  userController.getUserFriends
+);
 
 // Get User Friend Requests
 
-router.get('/friend-requests/:id',authMiddleware.verifyToken, userController.getUserFriendRequests);
+router.get(
+  "/friend-requests/:id",
+  authMiddleware.verifyToken,
+  userController.getUserFriendRequests
+);
 
 // Delete Friend
 
-router.put('/delete-friend/:id', authMiddleware.verifyToken, userController.deleteFriend);
+router.put(
+  "/delete-friend/:id",
+  authMiddleware.verifyToken,
+  userController.deleteFriend
+);
