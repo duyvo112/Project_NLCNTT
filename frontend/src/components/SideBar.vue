@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar p-3 z-3">
-        <h2 class="text-center logo">
+        <h2 class="text-center logo p-4">
             <router-link :to="{ name: 'HomePage' }" class="text-decoration-none text-dark">
                 FriendGram
             </router-link>
@@ -23,6 +23,12 @@
                     <font-awesome-icon class="nav-icon" :icon="['fas', 'search']" />
                     <span>Search</span>
                 </a>
+            </li>
+            <li class="nav-item m-1">
+                <router-link class="nav-link" :to="{ name: 'ChatPage' }">
+                    <font-awesome-icon class="nav-icon" :icon="['fas', 'message']" />
+                    <span>Messages</span>
+                </router-link>
             </li>
             <li class="nav-item m-1">
                 <a :class="notificationCount > 0 ? 'nav-link text-danger' : 'nav-link'" href="#"
