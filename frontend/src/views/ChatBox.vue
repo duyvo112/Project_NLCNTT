@@ -141,7 +141,7 @@ export default {
             }
 
             // Tạo kết nối mới
-            socket.value = io('http://localhost:3000', {
+            socket.value = io(import.meta.env.VITE_BACKEND_URL, {
                 transports: ['websocket'],
                 autoConnect: true,
                 reconnection: false
