@@ -11,9 +11,12 @@
                 <div class="profile-container">
                     <div class="profile-header d-flex align-items-center">
                         <!-- Avatar và nút Edit Profile -->
-
                         <div class="profile-left d-flex flex-column align-items-center">
-                            <img :src="user.avatar" alt="Profile" class="w-10 profile-image rounded-circle">
+                            <div class="position-relative">
+                                <img :src="user.avatar" alt="Profile" class="w-10 profile-image rounded-circle">
+                                <font-awesome-icon v-if="isOwner" icon="camera" class="edit-avatar-icon"
+                                    @click="openAvatarModal" />
+                            </div>
                             <a v-if="isOwner" href="#" @click.prevent="openEditModal"
                                 class="edit-profile-link text-decoration-none mt-2">
                                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
@@ -50,6 +53,7 @@
                             <div class="about-user">
                                 <p>{{ user.about }}</p>
                             </div>
+
                         </div>
 
 
@@ -75,6 +79,7 @@
 
         <!-- Modal Edit Profile -->
         <EditProfileModal :user="user" :isOpen="isModalOpen" @close="closeEditModal" @updateUser="updateUserInfo" />
+        <AvatarModal :isOpen="isAvatarModalOpen" @close="closeAvatarModal" @avatarUpdated="updateAvatar" />
     </div>
 </template>
 
@@ -82,14 +87,17 @@
 import Sidebar from "../components/SideBar.vue";
 import Post from "../components/Post.vue";
 import EditProfileModal from "../components/EditProfileModal.vue";
+import AvatarModal from "@/components/AvatarModal.vue";
 import { useUserStore } from "@/stores/userStore";
 import { usePostStore } from "@/stores/postStore";
 import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+
+
 export default {
     name: "UserProfile",
-    components: { Sidebar, Post, EditProfileModal },
+    components: { Sidebar, Post, EditProfileModal, AvatarModal },
 
     setup() {
         const userStore = useUserStore();
@@ -99,7 +107,8 @@ export default {
         const user = ref({});
         const posts = ref([]);
         const isLoading = ref(true);
-        const isModalOpen = ref(false); // ✅ Thêm biến theo dõi modal
+        const isModalOpen = ref(false);
+        const isAvatarModalOpen = ref(false);
 
         const loadUserProfile = async () => {
             try {
@@ -163,6 +172,20 @@ export default {
             }
         };
 
+        const openAvatarModal = () => {
+            isAvatarModalOpen.value = true;
+        };
+
+
+        const closeAvatarModal = () => {
+            isAvatarModalOpen.value = false;
+        };
+
+        const updateAvatar = (newAvatar) => {
+            user.value.avatar = newAvatar;
+            loadUserProfile();
+        };
+
         onMounted(loadUserProfile);
         watch(() => route.params.id, loadUserProfile);
 
@@ -171,12 +194,16 @@ export default {
             posts,
             isLoading,
             isModalOpen,
+            isAvatarModalOpen,
             openEditModal,
             closeEditModal,
             updateUserInfo,
             addFriend,
             acceptFriendRequest,
-            deleteFriend
+            deleteFriend,
+            openAvatarModal,
+            closeAvatarModal,
+            updateAvatar
         };
     },
     computed: {
@@ -228,5 +255,16 @@ export default {
 
 .edit-profile-link {
     margin-top: 5px;
+}
+
+.edit-avatar-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
 }
 </style>
