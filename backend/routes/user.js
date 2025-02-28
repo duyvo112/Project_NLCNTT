@@ -3,19 +3,19 @@ const router = require("express").Router();
 const authMiddleware = require("../middlewares/authMiddleware");
 const upload = require("../config/Multer");
 
-// Update User
-router.put(
-  "/:id",
-  authMiddleware.verifyTokenAndUserAuthorization,
-  userController.updateUser
-);
-
 // Update User Avatar
 router.put(
   "/update-avatar",
   authMiddleware.verifyToken,
   upload.single("image"),
   userController.updateAvatar
+);
+
+// Update User
+router.put(
+  "/:id",
+  authMiddleware.verifyTokenAndUserAuthorization,
+  userController.updateUser
 );
 
 // Search User
