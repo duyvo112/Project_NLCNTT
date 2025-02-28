@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', {
     async fetchUser(userId) {
       try {
         const response = await socialMediaApi.getUser(userId)
-        return response.data // ✅ Trả về dữ liệu thay vì ghi đè this.user
+        return response.data
       } catch (error) {
         console.error('Error fetching user:', error)
         return null
@@ -24,11 +24,10 @@ export const useUserStore = defineStore('user', {
     },
 
     async fetchFriends(userId) {
-      // ✅ Lấy danh sách bạn bè từ API
       try {
         const response = await socialMediaApi.getFriends(userId)
         this.friends = response.data.map((friend) => ({
-          _id: friend._id, // ✅ ID của bạn bè
+          _id: friend._id,
           username: friend.username,
           avatar: friend.avatar,
         }))
@@ -101,6 +100,14 @@ export const useUserStore = defineStore('user', {
         console.error('Error searching users:', error)
       }
     },
+    async updateAvatar(userId, avatar) {
+      try {
+        const response = await socialMediaApi.updateAvatar(userId, avatar)
+        this.user.avatar = response.data.avatar
+      } catch (error) {
+        console.error('Error updating avatar:', error)
+      }
+    },
     setUser(userData) {
       this.user = userData
     },
@@ -117,5 +124,5 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('user')
     },
   },
-  persist: true, // Giữ trạng thái sau khi reload (nếu dùng pinia-plugin-persistedstate)
+  persist: true,
 })
