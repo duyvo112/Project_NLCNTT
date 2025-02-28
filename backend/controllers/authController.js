@@ -94,6 +94,7 @@ const authController = {
 
       // Xóa cookie
       res.clearCookie("refreshToken", {
+        withCredentials: true,
         httpOnly: true,
         secure: true,
         path: "/",
