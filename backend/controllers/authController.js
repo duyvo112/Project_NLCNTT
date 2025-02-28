@@ -73,9 +73,9 @@ const authController = {
         const refreshToken = authController.generateRefreshToken(user);
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
-          secure: false,
+          secure: true,
           path: "/",
-          sameSite: "strict",
+          sameSite: "none",
         });
         const { password, ...others } = user._doc;
         return res.status(200).json({ ...others, accessToken });
