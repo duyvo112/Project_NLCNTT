@@ -72,10 +72,11 @@ const authController = {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         res.cookie("refreshToken", refreshToken, {
+          withCredentials: true,
           httpOnly: true,
           secure: true,
           path: "/",
-          sameSite: "none",
+          sameSite: "None",
         });
         const { password, ...others } = user._doc;
         return res.status(200).json({ ...others, accessToken });
