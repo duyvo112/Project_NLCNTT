@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.DOMAIN_FRONTEND,
+    origin: "https://projectnlcntt-production.up.railway.app",
     // "http://localhost:5173"||
     credentials: true,
   })
@@ -30,7 +30,7 @@ connectDB().then(() => {
   // Khởi tạo Socket.IO sau khi đã kết nối MongoDB
   const io = new Server(server, {
     cors: {
-      origin: process.env.DOMAIN_FRONTEND,
+      origin: "https://projectnlcntt-production.up.railway.app",
     },
   });
 
