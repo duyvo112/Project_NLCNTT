@@ -1,11 +1,15 @@
 <template>
-    <div class="suggestions p-3">
+    <div class="suggestions px-4">
         <!-- Hiển thị profile của user -->
         <div class="profile d-flex align-items-center justify-content-center">
             <router-link :to="{ name: 'UserProfile', params: { id: user._id } }" class="text-decoration-none">
                 <div class="user-detail flex-grow-1 d-flex align-items-center text-decoration-none text-dark">
                     <img :src="user.avatar" alt="Profile picture" class="rounded-circle w-10 me-2" />
-                    <h5 class="mb-0">{{ user.username }}</h5>
+                    <h5 class="mb-0 fs-6 d-flex flex-column">
+                        <span class="fw-bold">{{ user.username }}</span>
+                        <small class="text-muted text-sm fw-light">{{ user.fullname }}</small>
+                    </h5>
+
                 </div>
             </router-link>
             <div class="logout">
@@ -20,7 +24,7 @@
                 <router-link :to="{ name: 'UserProfile', params: { id: friend._id } }"
                     class="text-decoration-none text-dark">
                     <img :src="friend.avatar" alt="Friend's profile picture" class="rounded-circle w-10 me-2" />
-                    <strong>{{ friend.username }}</strong>
+                    <strong class="fs-6">{{ friend.username }}</strong>
                 </router-link>
             </li>
         </ul>
@@ -41,7 +45,7 @@ export default {
 
         // Lấy dữ liệu từ store
         const user = computed(() => userStore.user);
-        const friends = computed(() => userStore.friends); // ✅ Lấy danh sách bạn bè từ store
+        const friends = computed(() => userStore.friends);
 
         // Hàm logout
         const Logout = async () => {
