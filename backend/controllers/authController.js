@@ -95,9 +95,9 @@ const authController = {
       // Xóa cookie
       res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: false,
+        secure: true,
         path: "/",
-        sameSite: "strict",
+        sameSite: "None",
       });
 
       // Xóa refresh token khỏi danh sách
