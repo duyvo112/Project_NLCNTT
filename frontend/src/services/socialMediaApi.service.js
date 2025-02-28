@@ -10,6 +10,7 @@ const socialMediaApi = {
   getUser: (id) => axiosInstance.get(`/api/user/${id}`),
   updateUser: (id, data) => axiosInstance.put(`/api/user/${id}`, data),
   searchUsers: (username) => axiosInstance.get(`/api/user/search?username=${username}`),
+  updateAvatar: (id, data) => axiosInstance.put(`/api/user/update-avatar`, data),
   //Posts
   getPosts: () => axiosInstance.get('/api/post'),
   createPost: (data) =>
@@ -28,6 +29,8 @@ const socialMediaApi = {
   deleteFriend: (id) => axiosInstance.put(`/api/user/delete-friend/${id}`),
   //Explore
   getLatestNews: () => axiosInstance.get('/api/explore/latest-news'),
+  //Messages
+  getMessages: (user1, user2) => axiosInstance.get(`/api/messages/${user1}/${user2}`),
 }
 
 export default socialMediaApi
