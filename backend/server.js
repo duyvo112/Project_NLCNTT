@@ -30,7 +30,7 @@ connectDB().then(() => {
   // Khởi tạo Socket.IO sau khi đã kết nối MongoDB
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "https://friendgramm.netlify.app",
     },
   });
 
