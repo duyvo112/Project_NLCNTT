@@ -9,7 +9,10 @@
                         :to="{ name: 'UserProfile', params: { id: user._id } }">
                         <img :src="user.avatar" alt="User Avatar" class="rounded-circle"
                             style="width: 50px; height: 50px;">
-                        {{ user.username }}
+                        <h5 class="mb-0 fs-6 d-flex flex-column">
+                            <span class="fw-bold pe-5">{{ user.username }}</span>
+                            <small class="text-muted text-sm fw-light">{{ user.fullname }}</small>
+                        </h5>
                     </router-link>
                 </li>
             </ul>
