@@ -2,7 +2,6 @@
     <div>
         <NewPostForm class="w-100" />
         <hr />
-        <div class="h1">NewsFeed</div>
         <div class="feed w-85 container">
             <Post v-for="post in posts" :key="post.id" :post="post" />
         </div>
