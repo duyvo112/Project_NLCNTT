@@ -1,10 +1,12 @@
 <template>
     <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header border-0 bg-white d-flex justify-content-between align-items-center">
             <router-link class="text-decoration-none text-dark"
                 :to="{ name: 'UserProfile', params: { id: post.user._id } }">
                 <img :src="post.user.avatar" class="rounded-circle w-10" alt="User avatar" />
-                <span class="ms-2 fs-5">{{ post.user.username }}</span>
+                <span class="ms-2 fs-6 fw-bold">{{ post.user.username }}</span><small
+                    class="text-muted text-sm text-decoration-none"> • {{
+                        timeAgo(post.createdAt) }}</small>
             </router-link>
             <!-- Dấu X để xóa -->
             <button v-if="isOwner" @click="deletePost(post._id)" class="btn btn-close pb-4">
@@ -21,9 +23,7 @@
                 <Comment :postId="post._id" />
             </div>
         </div>
-        <div class="card-footer">
-            <small class="text-muted">{{ timeAgo(post.createdAt) }}</small>
-        </div>
+
     </div>
 </template>
 
@@ -85,6 +85,7 @@ export default {
 <style scoped>
 .w-10 {
     width: 8%;
+    height: 8%;
 }
 
 .rounded-circle {
