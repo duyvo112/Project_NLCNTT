@@ -77,7 +77,6 @@ const authController = {
           secure: true,
           path: "/",
           sameSite: "None",
-          domain: "https://projectnlcntt-production.up.railway.app",
         });
         const { password, ...others } = user._doc;
         return res.status(200).json({ ...others, accessToken });
@@ -100,7 +99,6 @@ const authController = {
         secure: true,
         path: "/",
         sameSite: "None",
-        domain: "https://projectnlcntt-production.up.railway.app",
       });
 
       // Xóa refresh token khỏi danh sách
