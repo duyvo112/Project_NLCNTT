@@ -1,5 +1,6 @@
 <template>
     <div class="container-fluid p-0">
+        <PageHeader title="Explore" />
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-2 d-none d-md-block p-0 border-end">
@@ -40,9 +41,10 @@
 <script>
 import Sidebar from "@/components/SideBar.vue";
 import socialMediaApi from "@/services/socialMediaApi.service";
+import PageHeader from "@/components/PageHeader.vue";
 export default {
     name: "ExplorePage",
-    components: { Sidebar },
+    components: { Sidebar, PageHeader },
     data() {
         return {
             news: [],

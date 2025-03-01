@@ -1,5 +1,10 @@
 <template>
-    <div class="suggestions px-4">
+    <div class="suggestions p-3 ps-0 pe-0">
+        <!-- Nút đóng cho mobile -->
+        <button class="close-btn d-md-none" @click="$emit('close')">
+            <font-awesome-icon :icon="['fas', 'times']" />
+        </button>
+
         <!-- Hiển thị profile của user -->
         <div class="profile d-flex align-items-center justify-content-center">
             <router-link :to="{ name: 'UserProfile', params: { id: user._id } }" class="text-decoration-none">
@@ -13,7 +18,7 @@
                 </div>
             </router-link>
             <div class="logout">
-                <a href="#" @click="Logout" class="text-decoration-none">Logout</a>
+                <a href="#" @click="Logout" class="text-decoration-none me-5">Logout</a>
             </div>
         </div>
 
@@ -88,5 +93,24 @@ export default {
 
 .me-2 {
     margin-right: 0.5rem;
+}
+
+/* Thêm vào style hiện có */
+.close-btn {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    color: #666;
+    padding: 5px;
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .close-btn {
+        display: block;
+    }
 }
 </style>

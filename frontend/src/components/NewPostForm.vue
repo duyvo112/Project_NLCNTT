@@ -4,7 +4,7 @@
 
         <!-- Upload Image -->
         <input type="file" class="form-control mb-3" @change="onFileChange" accept="image/*" />
-        <img v-if="previewImage" :src="previewImage" class="img-preview mb-3" />
+        <img v-if="previewImage" :src="previewImage" class="img-preview mb-3 align-self-center" />
 
         <!-- Caption Input -->
         <textarea v-model="caption" class="form-control mb-3" placeholder="Write a caption..." rows="3"></textarea>
@@ -73,7 +73,7 @@ export default {
 }
 
 .img-preview {
-    max-width: 100%;
+    width: 50%;
     height: auto;
     border-radius: 10px;
 }

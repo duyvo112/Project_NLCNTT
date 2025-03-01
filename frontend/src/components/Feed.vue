@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NewPostForm class="w-100" />
+        <NewPostForm class="w-90" />
         <hr />
         <div class="feed w-85 container">
             <Post v-for="post in posts" :key="post.id" :post="post" />
@@ -31,5 +31,6 @@ export default {
 <style scoped>
 .w-85 {
     width: 85%;
+    max-width: 100%;
 }
 </style>

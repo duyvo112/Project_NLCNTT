@@ -1,5 +1,9 @@
 <template>
     <div class="sidebar p-3 z-3">
+        <!-- Nút đóng cho mobile -->
+        <button class="close-btn d-md-none" @click="$emit('close')">
+            <font-awesome-icon :icon="['fas', 'times']" />
+        </button>
         <h2 class="text-center logo p-4">
             <router-link :to="{ name: 'HomePage' }" class="text-decoration-none text-dark">
                 FriendGram
@@ -96,7 +100,6 @@ export default {
 
 .logo {
     font-family: "Brush Script MT", cursive;
-    font-size: 39px;
 }
 
 .nav-link {
@@ -119,5 +122,23 @@ export default {
     font-size: 20px;
     width: 25px;
     text-align: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    color: #666;
+    padding: 5px;
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .close-btn {
+        display: block;
+    }
 }
 </style>

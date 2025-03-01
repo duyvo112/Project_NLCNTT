@@ -1,5 +1,6 @@
 <template>
     <div class="container-fluid p-0">
+        <PageHeader title="Profile" />
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-2 d-none d-md-block p-0 border-end">
@@ -92,12 +93,12 @@ import { useUserStore } from "@/stores/userStore";
 import { usePostStore } from "@/stores/postStore";
 import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
-
+import PageHeader from "@/components/PageHeader.vue";
 
 
 export default {
     name: "UserProfile",
-    components: { Sidebar, Post, EditProfileModal, AvatarModal },
+    components: { Sidebar, Post, EditProfileModal, AvatarModal, PageHeader },
 
     setup() {
         const userStore = useUserStore();
