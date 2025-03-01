@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: process.env.DOMAIN_FRONTEND,
-    // "http://localhost:5173"||
+    // ""http://localhost:5173"" //test nào xog đổi lại
     credentials: true,
   })
 );
@@ -31,6 +31,7 @@ connectDB().then(() => {
   const io = new Server(server, {
     cors: {
       origin: process.env.DOMAIN_FRONTEND,
+      credentials: true,
     },
   });
 
