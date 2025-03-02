@@ -5,38 +5,44 @@
             <h2 class="text-center mb-4 logo">FriendGram</h2>
 
             <!-- Form đăng nhập -->
-            <form @submit.prevent="handleLogin" method="POST">
+            <VeeForm :validation-schema="schema" @submit="handleLogin" v-slot="{ errors }">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="email" v-model="this.form.email" required />
+                    <Field name="email" type="email" class="form-control" :class="{ 'is-invalid': errors.email }"
+                        placeholder="Email" v-model="form.email" />
+                    <div class="invalid-feedback">{{ errors.email }}</div>
                 </div>
+
                 <div class="mb-3 position-relative">
-                    <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password"
-                        v-model="this.form.password" required />
+                    <Field name="password" :type="showPassword ? 'text' : 'password'" class="form-control"
+                        :class="{ 'is-invalid': errors.password }" placeholder="Password" v-model="form.password" />
+                    <div class="invalid-feedback">{{ errors.password }}</div>
                     <span @click="togglePassword" class="eye-icon">
-                        <font-awesome-icon :icon="['fas', 'eye']" v-if="!showPassword" />
-                        <font-awesome-icon :icon="['fas', 'eye-slash']" v-else />
+                        <font-awesome-icon :icon="['fas', showPassword ? 'eye-slash' : 'eye']" />
                     </span>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Log In</button>
-            </form>
+            </VeeForm>
             <!-- Đăng ký -->
             <div class="text-center mt-3">
-                <span>Don't have an account? <router-link :to="{ name: 'RegisterPage' }"><a href="#"
-                            class="fw-bold">Sign
-                            up.</a></router-link></span>
-
-
-
+                <span>Don't have an account?
+                    <router-link :to="{ name: 'RegisterPage' }" class="fw-bold text-decoration-none">
+                        Sign up
+                    </router-link>
+                </span>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { Form as VeeForm, Field } from 'vee-validate';
+import * as yup from 'yup';
 import socialMediaApi from '../services/socialMediaApi.service';
 import { useUserStore } from '../stores/userStore';
+
 export default {
     name: "LoginPage",
+    components: { VeeForm, Field },
     data() {
         return {
             form: {
@@ -44,35 +50,46 @@ export default {
                 password: "",
             },
             showPassword: false,
+            schema: yup.object({
+                email: yup.string()
+                    .required('Email is required')
+                    .email('Email is invalid'),
+                password: yup.string()
+                    .required('Password is required')
+                    .min(6, 'Password must be at least 6 characters'),
+            })
         };
     },
     methods: {
-        handleLogin() {
-            socialMediaApi.login(this.form)
-                .then((response) => {
-                    const { data } = response;
-                    console.log("datta", data);
-                    // Lưu accessToken vào localStorage
-                    useUserStore().setAccessToken(data.accessToken);
-                    useUserStore().setUser(data);
-                    localStorage.setItem("accessToken", data.accessToken);
-                    // Chuyển hướng đến trang home
-                    this.$router.push({ name: "HomePage" });
+        async handleLogin() {
+            try {
+                const response = await socialMediaApi.login(this.form);
+                const { data } = response;
 
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+                const userStore = useUserStore();
+                userStore.setAccessToken(data.accessToken);
+                userStore.setUser(data);
+                localStorage.setItem("accessToken", data.accessToken);
+
+                this.$router.push({ name: "HomePage" });
+            } catch (error) {
+                alert("User or password is incorrect");
+                console.error('Login failed:', error);
+            }
         },
         togglePassword() {
             this.showPassword = !this.showPassword;
-        },
-    },
-
+        }
+    }
 };
 </script>
 
 <style scoped>
+.invalid-feedback {
+    color: red;
+    font-size: 12px;
+}
+
 /* Tùy chỉnh giao diện */
 .login-box {
     width: 350px;
