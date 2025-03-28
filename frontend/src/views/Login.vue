@@ -20,7 +20,14 @@
                         <font-awesome-icon :icon="['fas', showPassword ? 'eye-slash' : 'eye']" />
                     </span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Log In</button>
+                <button type="submit" class="btn btn-primary w-100" :disabled="isLoading">
+                    <span v-if="isLoading">
+                        <font-awesome-icon :icon="['fas', 'spinner']" spin />
+                    </span>
+                    <span v-else>
+                        Log In
+                    </span>
+                </button>
             </VeeForm>
             <!-- Đăng ký -->
             <div class="text-center mt-3">
@@ -31,6 +38,7 @@
                 </span>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -45,6 +53,7 @@ export default {
     components: { VeeForm, Field },
     data() {
         return {
+            isLoading: false,
             form: {
                 email: "",
                 password: "",
@@ -62,6 +71,7 @@ export default {
     },
     methods: {
         async handleLogin() {
+            this.isLoading = true;
             try {
                 const response = await socialMediaApi.login(this.form);
                 const { data } = response;
@@ -75,6 +85,8 @@ export default {
             } catch (error) {
                 alert("User or password is incorrect");
                 console.error('Login failed:', error);
+            } finally {
+                this.isLoading = false;
             }
         },
         togglePassword() {
