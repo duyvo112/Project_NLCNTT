@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 refreshTokens = [];
+const REFRESH_TOKEN_EXPIRE_TIME = 30 * 24 * 60 * 60 * 1000;
 const authController = {
   // REGISTER
   register: async (req, res) => {
@@ -51,7 +52,7 @@ const authController = {
         isAdmin: user.isAdmin,
       },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: REFRESH_TOKEN_EXPIRE_TIME }
     );
   },
   // LOGIN
@@ -77,6 +78,7 @@ const authController = {
           secure: true,
           path: "/",
           sameSite: "None",
+          maxAge: REFRESH_TOKEN_EXPIRE_TIME,
         });
         const { password, ...others } = user._doc;
         return res.status(200).json({ ...others, accessToken });
