@@ -14,7 +14,7 @@
         <div class="row pt-2">
             <!-- Sidebar -->
             <div :class="[
-                'col-md-2 border-end p-0',
+                'col-md-2 p-0',
                 { 'd-none d-md-block': !showSidebar },
                 { 'mobile-sidebar': !isDesktop && showSidebar }
             ]">
