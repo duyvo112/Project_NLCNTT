@@ -8,11 +8,13 @@ const routes = [
     path: '/login',
     name: 'LoginPage',
     component: LoginPage,
+    meta: { requiresGuest: true },
   },
   {
     path: '/register',
     name: 'RegisterPage',
     component: () => import('../views/Register.vue'),
+    meta: { requiresGuest: true },
   },
   {
     path: '/',
@@ -25,6 +27,7 @@ const routes = [
     name: 'UserProfile',
     component: () => import('../views/UserProfile.vue'),
     props: true,
+    meta: { requiresAuth: true },
   },
   {
     path: '/explore',
@@ -50,12 +53,23 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = useUserStore().isAuthenticated
-  if (to.matched.some((record) => record.meta.requiresAuth) && !isAuthenticated) {
-    next({ name: 'LoginPage' })
-  } else {
-    next()
+  const userStore = useUserStore()
+  const isAuthenticated = userStore.isAuthenticated
+
+  if (to.meta.requiresGuest && isAuthenticated) {
+    next({ name: 'HomePage' })
+    return
   }
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({
+      name: 'LoginPage',
+      query: { redirect: to.fullPath },
+    })
+    return
+  }
+
+  next()
 })
 
 export default router
