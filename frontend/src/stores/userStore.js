@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import socialMediaApi from '../services/socialMediaApi.service'
+import router from '../router'
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
@@ -118,10 +119,25 @@ export const useUserStore = defineStore('user', {
       console.log(userData)
       return socialMediaApi.register(userData)
     },
-    logout() {
-      localStorage.removeItem('post')
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('user')
+    async logout() {
+      try {
+        // Gọi API logout
+        await socialMediaApi.logout()
+        // Xóa dữ liệu trong localStorage
+        localStorage.removeItem('post')
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('user')
+
+        // Đảm bảo state đã được cập nhật trước khi chuyển trang
+        await router.push({ name: 'LoginPage' })
+
+        // Reload trang để đảm bảo reset hoàn toàn state
+        window.location.reload()
+      } catch (error) {
+        console.error('Logout error:', error)
+        // Vẫn chuyển về trang login ngay cả khi có lỗi
+        router.push({ name: 'LoginPage' })
+      }
     },
   },
   persist: true,

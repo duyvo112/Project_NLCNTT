@@ -39,14 +39,11 @@
 <script>
 import { useUserStore } from "../stores/userStore";
 import { computed } from "vue";
-import { useRouter } from "vue-router";
-import socialMediaApi from "../services/socialMediaApi.service";
 
 export default {
     name: "SuggestionsBar",
     setup() {
         const userStore = useUserStore();
-        const router = useRouter();
 
         // Lấy dữ liệu từ store
         const user = computed(() => userStore.user);
@@ -55,10 +52,7 @@ export default {
         // Hàm logout
         const Logout = async () => {
             try {
-                await socialMediaApi.logout();
                 userStore.logout();
-                localStorage.removeItem("accessToken");
-                router.push({ name: "LoginPage" });
             } catch (error) {
                 console.log(error);
             }
