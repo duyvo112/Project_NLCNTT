@@ -9,11 +9,15 @@
         <div class="profile d-flex align-items-center justify-content-center">
             <router-link :to="{ name: 'UserProfile', params: { id: user._id } }" class="text-decoration-none">
                 <div class="user-detail flex-grow-1 d-flex align-items-center text-decoration-none text-dark">
+
                     <img :src="user.avatar" alt="Profile picture" class="rounded-circle w-10 me-2" />
                     <h5 class="mb-0 fs-6 d-flex flex-column">
-                        <span class="fw-bold">{{ user.username }}</span>
+                        <span class="fw-bold">{{ user.username }}
+                            <font-awesome-icon v-if="isAdmin" class="mt-2" :icon="['fas', 'shield-halved']" />
+                        </span>
                         <small class="text-muted text-sm fw-light">{{ user.fullname }}</small>
                     </h5>
+
 
                 </div>
             </router-link>
@@ -57,11 +61,12 @@ export default {
                 console.log(error);
             }
         };
-
-        return { user, friends, Logout };
+        const isAdmin = computed(() => userStore.isAdmin);
+        return { user, friends, Logout, isAdmin };
     },
     created() {
         useUserStore().fetchFriends(useUserStore().user._id);
+        console.log("isAdmin", useUserStore().isAdmin);
     }
 };
 </script>
