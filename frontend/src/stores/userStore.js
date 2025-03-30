@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import socialMediaApi from '../services/socialMediaApi.service'
 import router from '../router'
+import { jwtDecode } from 'jwt-decode'
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
@@ -12,8 +13,15 @@ export const useUserStore = defineStore('user', {
     isAuthenticated() {
       return this.user !== null && this.accessToken !== null
     },
+    isAdmin() {
+      const decodedToken = jwtDecode(this.accessToken)
+      return decodedToken.isAdmin
+    },
   },
   actions: {
+    checkAdminAccess() {
+      return this.isAdmin
+    },
     async fetchUser(userId) {
       try {
         const response = await socialMediaApi.getUser(userId)
