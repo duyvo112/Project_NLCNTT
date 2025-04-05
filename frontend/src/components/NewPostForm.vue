@@ -2,32 +2,59 @@
     <div class="card p-3 new-post-form">
         <h5 class="card-title">Create a new post</h5>
 
+        <!-- Thông báo khi bị ban -->
+        <div v-if="isBanned" class="alert alert-danger mb-3">
+            <h6 class="alert-heading">
+                <font-awesome-icon :icon="['fas', 'ban']" /> Reason: {{ banReason }}
+            </h6>
+            <p class="mb-0">You cannot create new posts while banned.</p>
+        </div>
+
         <!-- Upload Image -->
-        <input type="file" class="form-control mb-3" @change="onFileChange" accept="image/*" />
-        <img v-if="previewImage" :src="previewImage" class="img-preview mb-3 align-self-center" />
+        <div class="" v-else>
+            <input type="file" class="form-control mb-3" @change="onFileChange" accept="image/*" />
+            <img v-if="previewImage" :src="previewImage" class="img-preview mb-3 align-self-center" />
 
-        <!-- Caption Input -->
-        <textarea v-model="caption" class="form-control mb-3" placeholder="Write a caption..." rows="3"></textarea>
+            <!-- Caption Input -->
+            <textarea v-model="caption" class="form-control mb-3" placeholder="Write a caption..." rows="3"></textarea>
 
-        <!-- Submit Button -->
-        <button class="btn btn-primary w-100" @click="submitPost" :disabled="isLoading">
-            <span v-if="isLoading" class="spinner-border spinner-border-sm"></span>
-            <span v-else>Post</span>
-        </button>
+            <!-- Submit Button -->
+            <button class="btn btn-primary w-100" @click="submitPost" :disabled="isLoading">
+                <span v-if="isLoading" class="spinner-border spinner-border-sm"></span>
+                <span v-else>Post</span>
+            </button>
+        </div>
     </div>
 </template>
 
 <script>
 import { usePostStore } from '../stores/postStore';
+import { useUserStore } from '../stores/userStore';
 
 export default {
+
     data() {
         return {
             imageFile: null,
             caption: "",
             previewImage: null,
             isLoading: false,
+            isBanned: false,
+            banReason: null
         };
+    },
+    async created() {
+        const userStore = useUserStore();
+        try {
+            const banStatus = await userStore.checkBanned(userStore.user._id);
+            this.banReason = banStatus.reason;
+            console.log("banStatus", banStatus);
+            if (banStatus && banStatus.isActive) {
+                this.isBanned = true;
+            }
+        } catch (error) {
+            console.error("Error checking ban status:", error);
+        }
     },
     methods: {
         onFileChange(event) {
@@ -39,6 +66,19 @@ export default {
         },
 
         async submitPost() {
+            // Kiểm tra ban trước khi post
+            const userStore = useUserStore();
+            const banStatus = await userStore.checkBanned(userStore.user._id);
+
+            if (banStatus && banStatus.isBanned) {
+                this.isBanned = true;
+                this.$toast.error("Bạn không thể đăng bài vì đang bị cấm!", {
+                    position: "top-right",
+                    timeout: 3000
+                });
+                return;
+            }
+
             if (!this.imageFile || !this.caption) {
                 alert("Please select an image and write a caption.");
                 return;
@@ -58,8 +98,12 @@ export default {
                 }
             } catch (error) {
                 console.error("Error creating post:", error);
+                if (error.response?.status === 403) {
+                    this.isBanned = true;
+                    alert("You are banned from posting.");
+                }
             } finally {
-                this.isLoading = false; // ✅ Tắt loading dù thành công hay thất bại
+                this.isLoading = false;
             }
         }
     },

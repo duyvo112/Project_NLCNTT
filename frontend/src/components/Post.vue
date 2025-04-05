@@ -7,7 +7,7 @@
                 <span class="ms-2 fs-6 fw-bold">{{ post?.user?.username }}</span>
                 <small class="text-muted text-sm text-decoration-none"> • {{
                     post?.createdAt ? timeAgo(post.createdAt) : ''
-                }}</small>
+                    }}</small>
             </router-link>
             <button v-if="isOwnerOrAdmin" @click="deletePost(post?._id)" class="btn btn-close pb-4">
             </button>
