@@ -80,7 +80,7 @@ const authController = {
           sameSite: "None",
           maxAge: REFRESH_TOKEN_EXPIRE_TIME,
         });
-        const { password, ...others } = user._doc;
+        const { password, isAdmin, ...others } = user._doc;
         return res.status(200).json({ ...others, accessToken });
       }
     } catch (err) {
