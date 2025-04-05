@@ -31,6 +31,9 @@ const socialMediaApi = {
   getLatestNews: () => axiosInstance.get('/api/explore/latest-news'),
   //Messages
   getMessages: (user1, user2) => axiosInstance.get(`/api/messages/${user1}/${user2}`),
+  //Ban
+  banUser: (banInfo) => axiosInstance.post('/api/ban', banInfo),
+  checkBanned: (userId) => axiosInstance.post('/api/ban/check-banned', { userId }),
 }
 
 export default socialMediaApi
