@@ -1,12 +1,24 @@
 const cloudinary = require("../config/Cloudinary");
 const Post = require("../models/Post");
 const User = require("../models/User");
+const BanUser = require("../models/BanUser");
 const Comment = require("../models/Comment");
 const postController = {
   createPost: async (req, res) => {
     try {
       const user = await User.findById(req.user.id);
       if (!user) return res.status(400).json({ msg: "User does not exist." });
+
+      // Kiểm tra ban trước khi xử lý file
+      const banUser = await BanUser.findOne({ userId: req.user.id });
+      if (banUser) {
+        // Nếu có file đã upload, xóa file đó
+        if (req.file) {
+          // Xóa file khỏi Cloudinary
+          await cloudinary.uploader.destroy(req.file.filename);
+        }
+        return res.status(403).json({ msg: "You are banned from posting." });
+      }
 
       const makePost = new Post({
         ...req.body,
@@ -18,6 +30,10 @@ const postController = {
       const newPost = await makePost.save();
       return res.json(newPost);
     } catch (error) {
+      // Nếu có lỗi và file đã upload, xóa file đó
+      if (req.file) {
+        await cloudinary.uploader.destroy(req.file.filename);
+      }
       res.status(500).json({ msg: error.message });
     }
   },

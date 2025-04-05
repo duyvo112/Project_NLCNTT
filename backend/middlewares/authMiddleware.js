@@ -60,5 +60,14 @@ const authMiddleware = {
       }
     });
   },
+  verifyTokenAndBanAuthorization: (req, res, next) => {
+    authMiddleware.verifyToken(req, res, () => {
+      if (req.user.isAdmin) {
+        next();
+      } else {
+        return res.status(403).json("You're not allowed to do that!");
+      }
+    });
+  },
 };
 module.exports = authMiddleware;
