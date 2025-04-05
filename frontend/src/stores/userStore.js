@@ -22,6 +22,25 @@ export const useUserStore = defineStore('user', {
     checkAdminAccess() {
       return this.isAdmin
     },
+    async banUser(banInfo) {
+      try {
+        const response = await socialMediaApi.banUser(banInfo)
+        return response.data
+      } catch (error) {
+        console.error('Error banning user:', error)
+        throw error
+      }
+    },
+    async checkBanned(userId) {
+      try {
+        const response = await socialMediaApi.checkBanned(userId)
+        return response.data
+      } catch (error) {
+        console.error('Error checking banned user:', error)
+        return null
+      }
+    },
+
     async fetchUser(userId) {
       try {
         const response = await socialMediaApi.getUser(userId)
