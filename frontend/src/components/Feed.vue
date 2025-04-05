@@ -1,8 +1,8 @@
 <template>
     <div>
         <NewPostForm class="w-90" />
-        <hr />
-        <div class="feed w-85 container">
+
+        <div class="feed w-85 container mt-4">
             <Post v-for="post in posts" :key="post.id" :post="post" />
         </div>
     </div>

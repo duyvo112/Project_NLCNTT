@@ -9,9 +9,6 @@ export default {
 </script>
 
 <style>
-/* CSS cho ứng dụng */
-
-
 #app {
   width: 100%;
   max-width: 100vw;
