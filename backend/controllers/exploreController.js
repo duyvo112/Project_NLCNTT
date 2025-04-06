@@ -11,7 +11,7 @@ const getLatestNews = async (req, res) => {
 
     if (data.status === "success") {
       const results = data.results
-        .filter((result) => result.image_url !== null)
+        .filter((result) => result.image_url !== null && result.language === "english")
         .map((result) => ({
           ...result,
           toJSON() {
