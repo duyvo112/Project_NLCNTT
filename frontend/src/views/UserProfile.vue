@@ -194,6 +194,14 @@ export default {
                 console.error("Error accepting friend request:", error);
             }
         };
+        const rejectFriendRequest = async (requestId) => {
+            try {
+                await userStore.rejectFriendRequest(requestId);
+                loadUserProfile();
+            } catch (error) {
+                console.error("Error rejecting friend request:", error);
+            }
+        };
         const deleteFriend = async (friendId) => {
             try {
                 await userStore.deleteFriend(friendId);
@@ -250,6 +258,7 @@ export default {
             closeEditModal,
             updateUserInfo,
             addFriend,
+            rejectFriendRequest,
             acceptFriendRequest,
             deleteFriend,
             openAvatarModal,
