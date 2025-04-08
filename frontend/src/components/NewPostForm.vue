@@ -72,10 +72,6 @@ export default {
 
             if (banStatus && banStatus.isBanned) {
                 this.isBanned = true;
-                this.$toast.error("Bạn không thể đăng bài vì đang bị cấm!", {
-                    position: "top-right",
-                    timeout: 3000
-                });
                 return;
             }
 
@@ -96,6 +92,8 @@ export default {
                     this.imageFile = null;
                     this.previewImage = null;
                 }
+
+
             } catch (error) {
                 console.error("Error creating post:", error);
                 if (error.response?.status === 403) {
