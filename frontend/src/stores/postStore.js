@@ -29,6 +29,7 @@ export const usePostStore = defineStore('post', {
       try {
         const response = await socialMediaApi.createPost(data)
         await this.getPosts()
+        window.location.reload();
         return response.data
       } catch (error) {
         console.error('Error creating post:', error)
